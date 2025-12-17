@@ -1,0 +1,758 @@
+import React, { useMemo, useState } from "react"; import { motion } from "framer-motion"; import { ArrowRight, Briefcase, Building2, ExternalLink, GraduationCap, Mail, MapPin, Phone, Rocket, Sparkles, Star, } from "lucide-react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button";
+
+/**
+
+Ultra-classy one-page portfolio (single-file React component)
+
+Styling: Tailwind
+
+Animations: Framer Motion
+
+Icons: lucide-react
+
+Components: shadcn/ui
+
+How to customize:
+
+1. Edit the CONFIG object below (name, links, experience, etc.)
+
+
+
+2. Swap the accent color by changing the --accent and --accent2 values. */
+
+
+
+
+const CONFIG = { name: "Vishal Khattar", role: "Customer Service Manager · Founder (BlinkBag)", location: "Edinburgh, United Kingdom · EH12", email: "khattar.vishal9@gmail.com", phone: "+44 7824 067196", links: { linkedin: "https://www.linkedin.com/in/vishal-khattar-34601b147/", instagram: "" /* optional /, website: "" / optional */, }, headline: "Operator + founder building premium experiences — on the floor and on the street.", subheadline: "MBA (Strategic Project Management) graduate with experience across customer service leadership, operations, and payroll at scale. Currently building BlinkBag — an LED-powered delivery-bag advertising platform that turns everyday routes into premium brand moments.", highlights: [ { label: "Customer Service Leadership", value: "Lead daily ops + resolve issues fast" }, { label: "Project Delivery", value: "CRM integration + multi-initiative coordination" }, { label: "Data & Process", value: "Audits, automation, Power BI/Excel" }, ], about: "I’m a people-first operator with a founder’s mindset. I’ve led daily retail operations, delivered CRM change, and worked in high-scale payroll and marketplace operations. Alongside my career, I’ve held elected leadership roles at Edinburgh Napier Students’ Association — representing 15,000+ students and negotiating outcomes with university leadership. Now I’m building BlinkBag: a next-gen delivery bag with LED panels that can run dynamic restaurant + brand campaigns in real time.",
+
+// PAGES pages: [ { id: "home", label: "Home" }, { id: "work", label: "Work" }, { id: "business", label: "Business" }, { id: "blog", label: "Blog" }, { id: "contact", label: "Contact" }, ],
+
+business: { name: "BlinkBag", tagline: "The LED delivery bag that turns every ride into a billboard.", summary: "BlinkBag helps restaurants and brands reach local customers through dynamic ads displayed on delivery bags — right where attention is already high: the street. We’re building a scalable, trackable, and premium outdoor channel for modern cities.", bullets: [ "Founder-led product strategy, brand identity, and go-to-market", "Partner outreach: restaurants, riders, and local brands", "Prototype + pilot planning (hardware + software + operations)", ], metrics: [ { k: "Stage", v: "Prototype / Pilot" }, { k: "Model", v: "B2B (restaurants & brands)" }, { k: "Base", v: "Edinburgh" }, ], },
+
+experience: [ { company: "Ladbrokes", title: "Customer Service Manager", period: "Edinburgh · 06/2022 – Present", bullets: [ "Lead daily operations, ensuring exceptional customer service and resolving client queries to improve satisfaction and loyalty.", "Managed integration of a new CRM system, improving data accuracy and overall customer relationship management.", "Collaborated with sales teams to boost revenue by 12% through improved cross-selling and up-selling strategies.", "Oversaw multiple initiatives end-to-end, ensuring clear coordination and timely completion.", "Improved team productivity by 25% through better communication and collaboration practices.", ], tags: ["Customer Experience", "Operations", "CRM", "Leadership"], }, { company: "Edinburgh Napier Students’ Association", title: "Sabbatical Officer & Board of Director", period: "Edinburgh · 07/2022 – 06/2023", bullets: [ "Elected to represent 15,000+ students; acted as strategic intermediary with university leadership.", "Negotiated extension of tuition payment plan (6 → 10 months), contributing to a 5% reduction in student drop-off.", "Managed 400+ representatives and volunteers to deliver projects and events; improved coordination and engagement.", "Chaired 9+ student council meetings, facilitating solutions-focused outcomes across stakeholders.", "Built partnerships with local businesses to create employment and internship opportunities for students.", ], tags: ["Stakeholder Management", "Negotiation", "Leadership", "Governance"], }, { company: "Wipro", title: "Payroll Analyst", period: "Gurugram · 05/2019 – 12/2020", bullets: [ "Managed payroll processing for 45,000+ employees, ensuring accurate and timely payments with compliance.", "Conducted payroll audits and reduced discrepancies by 6% through process improvements.", "Implemented an automated overpayment tool, increasing team productivity by 40% and reducing manual effort.", "Partnered with HR/Finance to resolve employee queries, adjustments, and deductions; improved satisfaction.", "Trained 8–10 team members on payroll processes and tools, improving team efficiency and retention.", ], tags: ["Payroll", "Automation", "Compliance", "Workday"], }, { company: "Urban Company", title: "Operations Analyst", period: "Gurugram · 06/2018 – 04/2019", bullets: [ "Analyzed and optimized operational processes to improve efficiency, reduce bottlenecks, and enhance delivery.", "Used data insights to recommend changes that increased professional income for service providers by 24%.", "Worked cross-functionally with marketing, tech, and customer service to implement operational improvements.", "Tracked and monitored KPIs using Excel and Power BI to support performance management.", ], tags: ["Operations", "Analytics", "Power BI", "Process Improvement"], }, ],
+
+education: [ { school: "Edinburgh Napier University", degree: "MBA · Strategic Project Management", period: "Graduated 05/2024", details: [ "Sabbatical Officer & Board Director (Students’ Association)", "Strategy, project delivery, stakeholder management", ], }, { school: "Jagannath International Management School (JIMS)", degree: "BBA", period: "Graduated 06/2018", details: ["Business fundamentals, operations, and management"], }, ],
+
+skills: [ "Customer service leadership", "Operations management", "Project management", "Stakeholder management", "Process improvement", "Payroll & compliance", "Data analysis (Excel/Power BI)", "CRM (Salesforce/Ameyo/Seibel)", "Basic SQL", "Workday", ],
+
+tools: [ "Microsoft Office", "Workday", "Power BI", "Advanced Excel", "Salesforce", "IBM Content Navigator", "Omnia", "Ameyo", "Seibel System", ],
+
+activities: [ { title: "Appin Entrepreneurship Competition Finalist (2024)", org: "Bright Red Triangle · Edinburgh Napier University", bullets: [ "Pitched a ‘Social Currency Card for Influencers’ concept (Visa/MasterCard powered).", "Cashback linked to social score; designed to drive organic brand marketing via creators.", ], }, { title: "President, International Society (2022)", org: "Edinburgh Napier University", bullets: [ "Organized 10+ events in one trimester (bingo nights, cultural events, tours, parties).", "Reached 100+ attendees per event; grew to 70 active members.", "Awarded “Best Society of the Year 2022” by the Students’ Association.", ], }, ],
+
+blogPosts: [ { slug: "why-i-build-products-people-notice", title: "Why I build products people notice", date: "2025-12-17", readTime: "4 min read", excerpt: "From customer service floors to city streets — what taught me to design for attention, trust, and measurable outcomes.", content: [ "Most products fail for one reason: they’re invisible. Not just in marketing — in daily life.", "Working in customer-facing environments taught me the real rule: people only remember what feels smooth, fast, and human.", "That’s the same principle behind BlinkBag. Delivery riders already move through the busiest parts of the city — where attention is naturally high. So why shouldn’t that route carry premium, trackable brand messages?", "When you build for attention and trust, you get two wins: people notice you — and they believe you.", "That’s the work I love: making experiences feel premium, then making them scale.", ], tags: ["Build", "Operations", "Brand", "BlinkBag"], }, ],
+
+featuredWork: [ { title: "BlinkBag · Business & Product", desc: "Founder-led build: concept → prototype → partnerships → pilot.", href: "#business", icon: Rocket, }, { title: "Leadership & Negotiation", desc: "Elected student leader; negotiated outcomes with measurable impact.", href: "#work", icon: Sparkles, }, ],
+
+testimonials: [ { quote: "Replace this with a real reference—this section adds instant credibility for jobs and partnerships.", name: "Add a reference", role: "Manager / Client / Partner", }, ], };
+
+const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } }, };
+
+function Chip({ children }: { children: React.ReactNode }) { return ( <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80"> {children} </span> ); }
+
+function SectionTitle({ eyebrow, title, subtitle, }: { eyebrow: string; title: string; subtitle?: string; }) { return ( <div className="mb-8"> <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs tracking-wide text-white/70"> <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" /> {eyebrow} </div> <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl"> {title} </h2> {subtitle ? ( <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/70"> {subtitle} </p> ) : null} </div> ); }
+
+function Anchor({ href, children }: { href: string; children: React.ReactNode }) { return ( <a href={href} className="inline-flex items-center gap-2 text-white/80 hover:text-white transition" target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} > {children} <ExternalLink className="h-4 w-4 opacity-60" /> </a> ); }
+
+export default function PortfolioUltraClassy() { // Lightweight multi-page routing via hash (#home, #work, #business, #blog, #contact) const getRoute = () => { const raw = (typeof window !== "undefined" ? window.location.hash : "") || "#home"; const [hash, query] = raw.split("?"); const page = (hash || "#home").replace("#", "") as any; const params = new URLSearchParams(query || ""); return { page, post: params.get("post") } as { page: string; post: string | null }; };
+
+const [{ page, post }, setRoute] = useState(getRoute());
+
+React.useEffect(() => { const onHash = () => setRoute(getRoute()); window.addEventListener("hashchange", onHash); return () => window.removeEventListener("hashchange", onHash); }, []);
+
+const [mode, setMode] = useState<"dark" | "light">("dark");
+
+const palette = useMemo(() => { // Premium emerald + electric lime vibe (fits BlinkBag) return mode === "dark" ? { bg: "bg-[#070A0F]", card: "bg-white/[0.04]", border: "border-white/10", text: "text-white", subtext: "text-white/70", glow: "from-[color:var(--accent)]/20 via-transparent to-[color:var(--accent2)]/10", } : { bg: "bg-[#F7F8FA]", card: "bg-black/[0.04]", border: "border-black/10", text: "text-black", subtext: "text-black/70", glow: "from-[color:var(--accent)]/20 via-transparent to-[color:var(--accent2)]/10", }; }, [mode]);
+
+const isDark = mode === "dark";
+
+return ( <div className={${palette.bg} min-h-screen} style={{ // Accent variables (change these two to re-theme) // Dark mode: neon emerald + lime // Light mode: same accents still look premium ["--accent" as any]: "#12F7A2", ["--accent2" as any]: "#B6FF4D", }} > {/* Background glow */} <div className="pointer-events-none fixed inset-0"> <div className={absolute -top-48 left-1/2 h-[520px] w-[720px] -translate-x-1/2 rounded-full blur-3xl bg-gradient-to-b ${palette.glow}} /> <div className={absolute -bottom-64 right-[-160px] h-[560px] w-[560px] rounded-full blur-3xl bg-gradient-to-b ${palette.glow}} /> </div>
+
+{/* Top nav */}
+  <div className="sticky top-0 z-20 backdrop-blur-xl">
+    <div
+      className={`mx-auto flex max-w-6xl items-center justify-between px-5 py-4 border-b ${palette.border} ${
+        isDark ? "bg-[#070A0F]/60" : "bg-white/70"
+      }`}
+    >
+      <a href="#" className="group inline-flex items-center gap-3">
+        <div
+          className={`h-9 w-9 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center shadow-sm`}
+        >
+          <Star className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+        </div>
+        <div className="leading-tight">
+          <div className={`text-sm font-semibold ${palette.text}`}>{CONFIG.name}</div>
+          <div className={`text-xs ${palette.subtext}`}>Portfolio</div>
+        </div>
+      </a>
+
+      <div className="hidden items-center gap-2 text-sm sm:flex">
+        {CONFIG.pages.map((p) => {
+          const active = page === p.id;
+          return (
+            <a
+              key={p.id}
+              href={`#${p.id}`}
+              className={`rounded-full px-3 py-1 transition ${
+                active
+                  ? isDark
+                    ? "bg-white/10 text-white"
+                    : "bg-black/10 text-black"
+                  : `${palette.subtext} hover:${palette.text}`
+              }`}
+            >
+              {p.label}
+            </a>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="secondary"
+          className={`${
+            isDark
+              ? "bg-white/10 text-white hover:bg-white/15"
+              : "bg-black/10 text-black hover:bg-black/15"
+          } rounded-2xl`}
+          onClick={() => setMode((m) => (m === "dark" ? "light" : "dark"))}
+        >
+          {isDark ? "Light" : "Dark"}
+        </Button>
+        <Button
+          className="rounded-2xl"
+          onClick={() => {
+            const el = document.querySelector("#contact");
+            el?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Let’s talk <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  {/* Content */}
+  <main className="relative mx-auto max-w-6xl px-5 pb-20">
+    {/* HOME */}
+    {page === "home" && (
+      <>
+        {/* Hero */}
+        <section className="pt-14 sm:pt-20">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="grid gap-10 lg:grid-cols-12"
+          >
+            <div className="lg:col-span-7">
+              <div
+                className={`inline-flex items-center gap-2 rounded-full border ${palette.border} ${palette.card} px-3 py-1 text-xs ${palette.subtext}`}
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                {CONFIG.location}
+              </div>
+              <h1
+                className={`mt-5 text-4xl font-semibold tracking-tight ${palette.text} sm:text-5xl`}
+              >
+                {CONFIG.headline}
+              </h1>
+              <p className={`mt-4 max-w-2xl text-base leading-relaxed ${palette.subtext}`}>
+                {CONFIG.subheadline}
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Chip>{CONFIG.role}</Chip>
+                <Chip>Founder-led growth</Chip>
+                <Chip>Execution-first</Chip>
+              </div>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button
+                  className="rounded-2xl"
+                  onClick={() => {
+                    window.location.hash = "#business";
+                  }}
+                >
+                  Explore BlinkBag <Rocket className="ml-2 h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  className={`${
+                    isDark
+                      ? "bg-white/10 text-white hover:bg-white/15"
+                      : "bg-black/10 text-black hover:bg-black/15"
+                  } rounded-2xl`}
+                  onClick={() => {
+                    window.location.hash = "#work";
+                  }}
+                >
+                  View work experience
+                </Button>
+                <div className={`ml-0 sm:ml-2 text-sm ${palette.subtext}`}>
+                  <span className="opacity-80">Links:</span>{" "}
+                  <span className="inline-flex items-center gap-3">
+                    <Anchor href={CONFIG.links.linkedin}>LinkedIn</Anchor>
+                    {CONFIG.links.instagram ? <Anchor href={CONFIG.links.instagram}>Instagram</Anchor> : null}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5">
+              <Card
+                className={`rounded-3xl border ${palette.border} ${palette.card} shadow-xl`}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`text-sm font-semibold ${palette.text}`}>Snapshot</div>
+                      <div className={`text-xs ${palette.subtext}`}>What I bring</div>
+                    </div>
+                    <div
+                      className={`h-10 w-10 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center`}
+                    >
+                      <Sparkles className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid gap-3">
+                    {CONFIG.highlights.map((h) => (
+                      <div
+                        key={h.label}
+                        className={`rounded-2xl border ${palette.border} ${
+                          isDark ? "bg-white/5" : "bg-black/5"
+                        } p-4`}
+                      >
+                        <div className={`text-xs ${palette.subtext}`}>{h.label}</div>
+                        <div className={`mt-1 text-sm font-semibold ${palette.text}`}>{h.value}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 rounded-2xl border border-[color:var(--accent)]/25 bg-[color:var(--accent)]/10 p-4">
+                    <div className={`text-xs ${palette.subtext}`}>Currently building</div>
+                    <div className={`mt-1 text-sm font-semibold ${palette.text}`}>{CONFIG.business.name}</div>
+                    <div className={`mt-2 text-sm ${palette.subtext}`}>{CONFIG.business.tagline}</div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {CONFIG.business.metrics.map((m) => (
+                  <Card key={m.k} className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                    <CardContent className="p-4">
+                      <div className={`text-xs ${palette.subtext}`}>{m.k}</div>
+                      <div className={`mt-1 text-sm font-semibold ${palette.text}`}>{m.v}</div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* About */}
+        <section id="about" className="mt-16 sm:mt-24">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <SectionTitle
+              eyebrow="ABOUT"
+              title="Operator energy. Founder ambition."
+              subtitle="A clean summary that feels premium, confident, and human—perfect for both recruiters and partners."
+            />
+            <div className="grid gap-6 lg:grid-cols-12">
+              <Card className={`rounded-3xl border ${palette.border} ${palette.card} lg:col-span-7`}>
+                <CardContent className="p-6">
+                  <p className={`text-base leading-relaxed ${palette.subtext}`}>{CONFIG.about}</p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {CONFIG.skills.slice(0, 6).map((s) => (
+                      <Chip key={s}>{s}</Chip>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className={`rounded-3xl border ${palette.border} ${palette.card} lg:col-span-5`}>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`h-10 w-10 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center`}
+                    >
+                      <GraduationCap className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+                    </div>
+                    <div>
+                      <div className={`text-sm font-semibold ${palette.text}`}>Education</div>
+                      <div className={`text-xs ${palette.subtext}`}>Strategy + delivery</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid gap-4">
+                    {CONFIG.education.map((e) => (
+                      <div
+                        key={e.school}
+                        className={`rounded-2xl border ${palette.border} ${
+                          isDark ? "bg-white/5" : "bg-black/5"
+                        } p-4`}
+                      >
+                        <div className={`text-sm font-semibold ${palette.text}`}>{e.school}</div>
+                        <div className={`text-xs ${palette.subtext}`}>{e.degree}</div>
+                        <div className={`mt-1 text-xs ${palette.subtext}`}>{e.period}</div>
+                        <ul className={`mt-3 space-y-1 text-sm ${palette.subtext}`}>
+                          {e.details.map((d) => (
+                            <li key={d} className="flex gap-2">
+                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+                              <span>{d}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </motion.div>
+        </section>
+      </>
+    )}
+
+    {/* WORK PAGE */}
+    {page === "work" && (
+      <>
+        <section className="pt-14 sm:pt-20">
+          <motion.div initial="hidden" animate="show" variants={fadeUp}>
+            <SectionTitle
+              eyebrow="WORK"
+              title="Work experience"
+              subtitle="A dedicated page for your roles, achievements, leadership and tools—clean and recruiter-friendly."
+            />
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <div className="grid gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-7 space-y-4">
+                {CONFIG.experience.map((x) => (
+                  <Card key={x.company + x.title} className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className={`text-sm font-semibold ${palette.text}`}>{x.title}</div>
+                          <div className={`mt-1 text-sm ${palette.subtext}`}>{x.company}</div>
+                          <div className={`mt-1 text-xs ${palette.subtext}`}>{x.period}</div>
+                        </div>
+                        <div
+                          className={`h-10 w-10 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center`}
+                        >
+                          <Briefcase className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+                        </div>
+                      </div>
+                      <ul className={`mt-4 space-y-2 text-sm ${palette.subtext}`}>
+                        {x.bullets.map((b) => (
+                          <li key={b} className="flex gap-2">
+                            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {x.tags.map((t) => (
+                          <Chip key={t}>{t}</Chip>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="lg:col-span-5 space-y-4">
+                <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                  <CardContent className="p-6">
+                    <div className={`text-sm font-semibold ${palette.text}`}>Skills</div>
+                    <p className={`mt-2 text-sm ${palette.subtext}`}>Scanable, modern, and ATS-friendly.</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {CONFIG.skills.map((s) => (
+                        <Chip key={s}>{s}</Chip>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                  <CardContent className="p-6">
+                    <div className={`text-sm font-semibold ${palette.text}`}>Tools</div>
+                    <p className={`mt-2 text-sm ${palette.subtext}`}>Systems you’ve used hands-on.</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {CONFIG.tools.map((t) => (
+                        <Chip key={t}>{t}</Chip>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                  <CardContent className="p-6">
+                    <div className={`text-sm font-semibold ${palette.text}`}>Leadership & activities</div>
+                    <div className="mt-4 space-y-3">
+                      {CONFIG.activities.map((a) => (
+                        <div
+                          key={a.title}
+                          className={`rounded-2xl border ${palette.border} ${
+                            isDark ? "bg-white/5" : "bg-black/5"
+                          } p-4`}
+                        >
+                          <div className={`text-sm font-semibold ${palette.text}`}>{a.title}</div>
+                          <div className={`mt-1 text-xs ${palette.subtext}`}>{a.org}</div>
+                          <ul className={`mt-3 space-y-2 text-sm ${palette.subtext}`}>
+                            {a.bullets.map((b: string) => (
+                              <li key={b} className="flex gap-2">
+                                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+      </>
+    )}
+
+    {/* BUSINESS PAGE */}
+    {page === "business" && (
+      <>
+        <section className="pt-14 sm:pt-20">
+          <motion.div initial="hidden" animate="show" variants={fadeUp}>
+            <SectionTitle
+              eyebrow="BUSINESS"
+              title="BlinkBag"
+              subtitle="A dedicated business page—positioned like a premium product/investor page."
+            />
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <div className="grid gap-6 lg:grid-cols-12">
+              <Card className={`rounded-3xl border ${palette.border} ${palette.card} lg:col-span-7`}>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className={`text-xl font-semibold ${palette.text}`}>{CONFIG.business.tagline}</div>
+                      <p className={`mt-3 text-sm leading-relaxed ${palette.subtext}`}>{CONFIG.business.summary}</p>
+                    </div>
+                    <div
+                      className={`h-10 w-10 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center`}
+                    >
+                      <Rocket className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+                    </div>
+                  </div>
+
+                  <div className="mt-5 rounded-2xl border border-[color:var(--accent)]/25 bg-gradient-to-b from-[color:var(--accent)]/10 via-transparent to-[color:var(--accent2)]/10 p-5">
+                    <div className={`text-xs ${palette.subtext}`}>What I’m doing as a founder</div>
+                    <ul className={`mt-3 space-y-2 text-sm ${palette.subtext}`}>
+                      {CONFIG.business.bullets.map((b) => (
+                        <li key={b} className="flex gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <Chip>Outdoor ads, reimagined</Chip>
+                    <Chip>Street-level attention</Chip>
+                    <Chip>Trackable campaigns</Chip>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="lg:col-span-5 space-y-4">
+                <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                  <CardContent className="p-6">
+                    <div className={`text-sm font-semibold ${palette.text}`}>Pitch (30 seconds)</div>
+                    <p className={`mt-3 text-sm leading-relaxed ${palette.subtext}`}>
+                      “BlinkBag turns delivery riders into moving media. Restaurants get instant local visibility. Brands get
+                      premium street-level impressions. Campaigns are dynamic, measurable, and designed to look
+                      unforgettable.”
+                    </p>
+                    <div className="mt-5 flex flex-col gap-2">
+                      <Button className="rounded-2xl" onClick={() => alert("Add your deck link here")}
+                        >Open pitch deck <ArrowRight className="ml-2 h-4 w-4" /></Button
+                      >
+                      <Button
+                        variant="secondary"
+                        className={`${
+                          isDark
+                            ? "bg-white/10 text-white hover:bg-white/15"
+                            : "bg-black/10 text-black hover:bg-black/15"
+                        } rounded-2xl`}
+                        onClick={() => alert("Add your demo video link here")}
+                      >
+                        Watch demo (optional)
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                  <CardContent className="p-6">
+                    <div className={`text-sm font-semibold ${palette.text}`}>Team</div>
+                    <p className={`mt-2 text-sm ${palette.subtext}`}>
+                      Co-founded with Himanshu (Operations/Growth) and supported by Nakul (Tech) in India.
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Chip>Founder</Chip>
+                      <Chip>Co-founder</Chip>
+                      <Chip>Tech (India)</Chip>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+      </>
+    )}
+
+    {/* BLOG PAGE (1 post) */}
+    {page === "blog" && (
+      <>
+        <section className="pt-14 sm:pt-20">
+          <motion.div initial="hidden" animate="show" variants={fadeUp}>
+            <SectionTitle
+              eyebrow="BLOG"
+              title="Notes & thinking"
+              subtitle="Short, high-signal writing to build credibility and personal brand."
+            />
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            {!post ? (
+              <div className="grid gap-6 lg:grid-cols-12">
+                <div className="lg:col-span-8 space-y-4">
+                  {CONFIG.blogPosts.map((p) => (
+                    <Card key={p.slug} className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <div className={`text-xs ${palette.subtext}`}>{p.date} · {p.readTime}</div>
+                            <div className={`mt-2 text-xl font-semibold ${palette.text}`}>{p.title}</div>
+                            <p className={`mt-2 text-sm leading-relaxed ${palette.subtext}`}>{p.excerpt}</p>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {p.tags.map((t: string) => (
+                                <Chip key={t}>{t}</Chip>
+                              ))}
+                            </div>
+                          </div>
+                          <div className={`h-10 w-10 rounded-2xl border ${palette.border} ${palette.card} grid place-items-center`}>
+                            <Sparkles className={`${isDark ? "text-white" : "text-black"} h-4 w-4`} />
+                          </div>
+                        </div>
+                        <div className="mt-5">
+                          <Button
+                            className="rounded-2xl"
+                            onClick={() => {
+                              window.location.hash = `#blog?post=${p.slug}`;
+                            }}
+                          >
+                            Read post <ArrowRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="lg:col-span-4">
+                  <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                    <CardContent className="p-6">
+                      <div className={`text-sm font-semibold ${palette.text}`}>Why a blog?</div>
+                      <p className={`mt-2 text-sm ${palette.subtext}`}>
+                        It shows your thinking. Recruiters see leadership. Partners see clarity. Investors see founder narrative.
+                      </p>
+                      <div className="mt-5 rounded-2xl border border-[color:var(--accent)]/25 bg-[color:var(--accent)]/10 p-4">
+                        <div className={`text-xs ${palette.subtext}`}>Next post idea</div>
+                        <div className={`mt-1 text-sm font-semibold ${palette.text}`}>How I think about attention as a growth channel</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            ) : (
+              <>
+                {(() => {
+                  const p = CONFIG.blogPosts.find((x) => x.slug === post);
+                  if (!p) {
+                    return (
+                      <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                        <CardContent className="p-6">
+                          <div className={`text-sm ${palette.subtext}`}>Post not found.</div>
+                          <div className="mt-4">
+                            <Button className="rounded-2xl" onClick={() => (window.location.hash = "#blog")}
+                              >Back to blog</Button
+                            >
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
+                  return (
+                    <div className="grid gap-6 lg:grid-cols-12">
+                      <div className="lg:col-span-8">
+                        <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                          <CardContent className="p-6">
+                            <div className={`text-xs ${palette.subtext}`}>{p.date} · {p.readTime}</div>
+                            <h1 className={`mt-2 text-3xl font-semibold tracking-tight ${palette.text}`}>{p.title}</h1>
+                            <p className={`mt-3 text-sm ${palette.subtext}`}>{p.excerpt}</p>
+                            <div className="mt-5 space-y-4">
+                              {p.content.map((para: string, idx: number) => (
+                                <p key={idx} className={`text-base leading-relaxed ${palette.subtext}`}>{para}</p>
+                              ))}
+                            </div>
+                            <div className="mt-6 flex flex-wrap gap-2">
+                              {p.tags.map((t: string) => (
+                                <Chip key={t}>{t}</Chip>
+                              ))}
+                            </div>
+                            <div className="mt-6">
+                              <Button className="rounded-2xl" onClick={() => (window.location.hash = "#blog")}
+                                >Back to blog</Button
+                              >
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                      <div className="lg:col-span-4">
+                        <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+                          <CardContent className="p-6">
+                            <div className={`text-sm font-semibold ${palette.text}`}>Want more posts?</div>
+                            <p className={`mt-2 text-sm ${palette.subtext}`}>
+                              Tell me your tone (professional / founder diary / marketing), and I’ll write 5 more posts that match your brand.
+                            </p>
+                            <div className="mt-5">
+                              <Button
+                                className="rounded-2xl"
+                                onClick={() => {
+                                  window.location.hash = "#contact";
+                                }}
+                              >
+                                Suggest topics <ArrowRight className="ml-2 h-4 w-4" />
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </>
+            )}
+          </motion.div>
+        </section>
+      </>
+    )}
+
+    {/* CONTACT PAGE */}
+    {page === "contact" && (
+      <>
+        <section className="pt-14 sm:pt-20" id="contact">
+          <motion.div initial="hidden" animate="show" variants={fadeUp}>
+            <SectionTitle
+              eyebrow="CONTACT"
+              title="Let’s build something people remember"
+              subtitle="Recruiter? Partner? Restaurant owner? Brand manager? This CTA is designed to convert."
+            />
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <div className="grid gap-6 lg:grid-cols-12">
+              <Card className={`rounded-3xl border ${palette.border} ${palette.card} lg:col-span-7`}>
+                <CardContent className="p-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className={`rounded-2xl border ${palette.border} ${isDark ? "bg-white/5" : "bg-black/5"} p-4`}>
+                      <div className={`text-xs ${palette.subtext}`}>Email</div>
+                      <div className={`mt-1 text-sm font-semibold ${palette.text} flex items-center gap-2`}>
+                        <Mail className="h-4 w-4 opacity-70" />
+                        <a className="hover:underline" href={`mailto:${CONFIG.email}`}>{CONFIG.email}</a>
+                      </div>
+                    </div>
+                    <div className={`rounded-2xl border ${palette.border} ${isDark ? "bg-white/5" : "bg-black/5"} p-4`}>
+                      <div className={`text-xs ${palette.subtext}`}>Phone</div>
+                      <div className={`mt-1 text-sm font-semibold ${palette.text} flex items-center gap-2`}>
+                        <Phone className="h-4 w-4 opacity-70" />
+                        <a className="hover:underline" href={`tel:${CONFIG.phone}`}>{CONFIG.phone}</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-2xl border border-[color:var(--accent)]/25 bg-[color:var(--accent)]/10 p-5">
+                    <div className={`text-sm font-semibold ${palette.text}`}>One-liner intro (copy/paste)</div>
+                    <p className={`mt-2 text-sm ${palette.subtext}`}>
+                      Hi, I’m {CONFIG.name}. I lead operations and build premium, attention-grabbing products—currently
+                      building BlinkBag in Edinburgh. Would love to connect.
+                    </p>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Button
+                      className="rounded-2xl"
+                      onClick={() => window.open(CONFIG.links.linkedin, "_blank")}
+                    >
+                      Connect on LinkedIn <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    {CONFIG.links.instagram ? (
+                      <Button
+                        variant="secondary"
+                        className={`${
+                          isDark
+                            ? "bg-white/10 text-white hover:bg-white/15"
+                            : "bg-black/10 text-black hover:bg-black/15"
+                        } rounded-2xl`}
+                        onClick={() => window.open(CONFIG.links.instagram, "_blank")}
+                      >
+                        View Instagram
+                      </Button>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className={`rounded-3xl border ${palette.border} ${palette.card} lg:col-span-5`}>
+                <CardContent className="p-6">
+                  <div className={`text-sm font-semibold ${palette.text}`}>Footer</div>
+                  <div className={`mt-3 rounded-2xl border ${palette.border} ${isDark ? "bg-white/5" : "bg-black/5"} p-5`}>
+                    <div className={`text-sm font-semibold ${palette.text}`}>{CONFIG.name}</div>
+                    <div className={`mt-1 text-xs ${palette.subtext}`}>{CONFIG.role}</div>
+                    <div className={`mt-3 text-xs ${palette.subtext}`}>© {new Date().getFullYear()} · Built with taste.</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </motion.div>
+        </section>
+      </>
+    )}
+
+    {/* Safety: if unknown page */}
+    {!["home", "work", "business", "blog", "contact"].includes(page) && (
+      <section className="pt-14 sm:pt-20">
+        <Card className={`rounded-3xl border ${palette.border} ${palette.card}`}>
+          <CardContent className="p-6">
+            <div className={`text-sm ${palette.subtext}`}>Page not found.</div>
+            <div className="mt-4">
+              <Button className="rounded-2xl" onClick={() => (window.location.hash = "#home")}
+                >Go home</Button
+              >
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    )}
+  </main>
+</div>
+
+); }
